@@ -1,14 +1,10 @@
 package org.application.bigman.fogstreamorderapp
 
 import android.support.v7.widget.RecyclerView
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import kotlinx.android.synthetic.main.recycler_item.view.*
-import org.application.bigman.fogstreamorderapp.R.id.tv_order_name
 
 /**
  * org.application.bigman.fogstreamorderapp
@@ -42,8 +38,9 @@ class MyAdapter(private var records: List<Order>) : RecyclerView.Adapter<MyAdapt
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindForecast(order: Order) {
-            itemView.tv_order_name.text = order.name
-            itemView.tv_order_number.text = order.number.toString()
+            itemView.tv_order_date.text = order.date.toString()
+            itemView.tv_order_from.text = order.from
+            itemView.tv_order_to.text = order.to
         }
     }
 }
