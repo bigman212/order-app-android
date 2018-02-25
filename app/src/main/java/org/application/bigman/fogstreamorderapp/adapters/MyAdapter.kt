@@ -1,16 +1,18 @@
-package org.application.bigman.fogstreamorderapp
+package org.application.bigman.fogstreamorderapp.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.recycler_item.view.*
+import org.application.bigman.fogstreamorderapp.data.model.Order
+import org.application.bigman.fogstreamorderapp.R
 
 /**
  * org.application.bigman.fogstreamorderapp
  * Created by bigman212 on 20.02.2018.
  **/
-class MyAdapter(private var records: List<Order>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class MyAdapter(private var orders: List<Order>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
     /**
      * Создание новых View и ViewHolder элемента списка, которые впоследствии могут переиспользоваться.
      */
@@ -21,15 +23,14 @@ class MyAdapter(private var records: List<Order>) : RecyclerView.Adapter<MyAdapt
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val record = records[position]
-        holder.bindForecast(record)
+        holder.bindForecast(orders[position])
     }
 
     /**
      * Заполнение виджетов View данными из элемента списка с номером i
      */
     override fun getItemCount(): Int {
-        return records.size
+        return orders.size
     }
 
     /**

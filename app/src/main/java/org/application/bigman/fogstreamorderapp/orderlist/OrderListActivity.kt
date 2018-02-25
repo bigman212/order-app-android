@@ -1,9 +1,12 @@
-package org.application.bigman.fogstreamorderapp
+package org.application.bigman.fogstreamorderapp.orderlist
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_order_list.*
+import org.application.bigman.fogstreamorderapp.adapters.MyAdapter
+import org.application.bigman.fogstreamorderapp.data.model.Order
+import org.application.bigman.fogstreamorderapp.R
 
 
 class OrderListActivity : AppCompatActivity(), OrderListContract.View {

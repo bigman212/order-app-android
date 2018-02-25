@@ -1,4 +1,7 @@
-package org.application.bigman.fogstreamorderapp
+package org.application.bigman.fogstreamorderapp.orderlist
+
+import io.reactivex.Observable
+import org.application.bigman.fogstreamorderapp.data.model.Order
 
 /**
  * org.application.bigman.fogstreamorderapp
@@ -18,6 +21,6 @@ interface OrderListContract {
     }
 
     interface Model {
-        fun getOrders(): List<Order>
+        fun getOrders(): Observable<Order>
     }
 }

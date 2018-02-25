@@ -1,4 +1,4 @@
-package org.application.bigman.fogstreamorderapp
+package org.application.bigman.fogstreamorderapp.data.model
 
 import java.util.*
 
