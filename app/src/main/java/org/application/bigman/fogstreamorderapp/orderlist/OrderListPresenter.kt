@@ -1,29 +1,31 @@
 package org.application.bigman.fogstreamorderapp.orderlist
 
-import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import android.os.Handler
+import org.application.bigman.fogstreamorderapp.data.DataSource
 import org.application.bigman.fogstreamorderapp.data.model.Order
+import org.application.bigman.fogstreamorderapp.orderdetail.Status
 
 /**
  * org.application.bigman.fogstreamorderapp
  * Created by bigman212 on 22.02.2018.
  **/
-class OrderListPresenter(private var orderView: OrderListContract.View) : OrderListContract.Presenter {
-    private var orderModel: OrderListContract.Model = OrderListModel
+class OrderListPresenter(private val mView: OrderListContract.View,
+                         private val mDataManager: DataSource) : OrderListContract.Presenter {
+    init {
+        mView.setPresenter(this)
+    }
 
-    override fun loadOrders() {
+    override fun getAllOrders() {
         val orders = ArrayList<Order>()
-        orderView.showProgress()
-        orderModel.getOrders()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
-                    orders.add(result)
-                }, { error ->
-                    error.printStackTrace()
-                })
-        orderView.hideProgress()
-        orderView.showOrders(orders)
+        mView.showProgress()
+
+        Handler().postDelayed(Runnable {
+            mView.updateView(listOf(Order("DATE", "from", "to", Status.OK.value)))
+            mView.hideProgress()
+        }, 3000)
+
+//        mDataManager.getOrders().doOnNext {
+//        }
+        mView.updateView(orders)
     }
 }

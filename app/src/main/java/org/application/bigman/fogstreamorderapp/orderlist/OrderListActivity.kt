@@ -1,44 +1,50 @@
 package org.application.bigman.fogstreamorderapp.orderlist
 
-import android.support.v7.app.AppCompatActivity
+
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import kotlinx.android.synthetic.main.activity_order_list.*
-import org.application.bigman.fogstreamorderapp.adapters.MyAdapter
-import org.application.bigman.fogstreamorderapp.data.model.Order
 import org.application.bigman.fogstreamorderapp.R
+import org.application.bigman.fogstreamorderapp.data.OrderRepository
+import org.application.bigman.fogstreamorderapp.data.model.Order
 
 
-class OrderListActivity : AppCompatActivity(), OrderListContract.View {
+class OrderListActivity : AppCompatActivity(), OrderListContract.View, SwipeRefreshLayout.OnRefreshListener {
+    override fun onRefresh() {
+        mPresenter.getAllOrders()
+    }
 
-    lateinit var presenter: OrderListPresenter
+    private lateinit var mPresenter: OrderListContract.Presenter
+    private lateinit var mAdapter: OrderListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_list)
-        presenter = OrderListPresenter(this)
+
         rv_orders.layoutManager = LinearLayoutManager(this)
         rv_orders.hasFixedSize()
+        mAdapter = OrderListAdapter(this)
+        rv_orders.adapter = mAdapter
+        mPresenter = OrderListPresenter(this, OrderRepository)
+        swipe_container.setOnRefreshListener(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        presenter.loadOrders()
-    }
-
-    override fun showOrders(orders: List<Order>) {
-        rv_orders.adapter = MyAdapter(orders)
-    }
-
-    override fun update(orders: List<Order>) {
-        rv_orders.adapter.notifyDataSetChanged()
+    override fun setPresenter(presenter: OrderListContract.Presenter) {
+        mPresenter = presenter
     }
 
     override fun showProgress() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        swipe_container.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        swipe_container.isRefreshing = false
+    }
+
+    override fun updateView(orders: List<Order>) {
+        mAdapter.updateData(orders)
     }
 }

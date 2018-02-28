@@ -1,6 +1,7 @@
 package org.application.bigman.fogstreamorderapp.orderlist
 
-import io.reactivex.Observable
+import org.application.bigman.fogstreamorderapp.MvpPresenter
+import org.application.bigman.fogstreamorderapp.MvpView
 import org.application.bigman.fogstreamorderapp.data.model.Order
 
 /**
@@ -11,16 +12,11 @@ import org.application.bigman.fogstreamorderapp.data.model.Order
 
 interface OrderListContract {
 
-    interface View : ProgressView {
-        fun showOrders(orders: List<Order>)
-        fun update(orders: List<Order>)
+    interface Presenter : MvpPresenter {
+        fun getAllOrders()
     }
 
-    interface Presenter {
-        fun loadOrders()
-    }
-
-    interface Model {
-        fun getOrders(): Observable<Order>
+    interface View : MvpView<Presenter> {
+        fun updateView(orders: List<Order>)
     }
 }

@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Created by bigman212 on 25.02.2018.
  **/
 object OrderServiceClient {
-    private const val BASE_URL = ""
+    private const val BASE_URL = "kljlj"
     fun create(): OrderService {
         val retrofitInstance = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
