@@ -1,14 +1,15 @@
 package org.application.bigman.fogstreamorderapp.orderlist
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.recycler_item.view.*
 import org.application.bigman.fogstreamorderapp.R
 import org.application.bigman.fogstreamorderapp.data.model.Order
+import org.application.bigman.fogstreamorderapp.orderdetail.OrderDetailActivity
 
 /**
  * org.application.bigman.fogstreamorderapp
@@ -25,7 +26,8 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
         val view = LayoutInflater.from(mContext).inflate(R.layout.recycler_item, viewGroup, false)
         val orderViewHolder = ViewHolder(view)
         orderViewHolder.itemView.setOnClickListener {
-            Toast.makeText(mContext, "YES", Toast.LENGTH_LONG).show()
+            val intent = Intent(mContext, OrderDetailActivity::class.java)
+            mContext.startActivity(intent)
         }
 
         return orderViewHolder

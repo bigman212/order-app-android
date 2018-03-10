@@ -7,8 +7,6 @@ package org.application.bigman.fogstreamorderapp
  **/
 interface MvpView<P : MvpPresenter> {
     fun setPresenter(presenter: P)
-
     fun showProgress()
-
     fun hideProgress()
 }

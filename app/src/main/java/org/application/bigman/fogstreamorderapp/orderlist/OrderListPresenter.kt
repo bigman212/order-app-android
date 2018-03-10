@@ -2,8 +2,8 @@ package org.application.bigman.fogstreamorderapp.orderlist
 
 import android.os.Handler
 import org.application.bigman.fogstreamorderapp.data.DataSource
+import org.application.bigman.fogstreamorderapp.data.OrderRepository
 import org.application.bigman.fogstreamorderapp.data.model.Order
-import org.application.bigman.fogstreamorderapp.orderdetail.Status
 
 /**
  * org.application.bigman.fogstreamorderapp
@@ -20,12 +20,10 @@ class OrderListPresenter(private val mView: OrderListContract.View,
         mView.showProgress()
 
         Handler().postDelayed(Runnable {
-            mView.updateView(listOf(Order("DATE", "from", "to", Status.OK.value)))
+            mView.updateView(OrderRepository.data)
             mView.hideProgress()
         }, 3000)
 
-//        mDataManager.getOrders().doOnNext {
-//        }
         mView.updateView(orders)
     }
 }

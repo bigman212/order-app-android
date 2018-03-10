@@ -10,12 +10,14 @@ import org.application.bigman.fogstreamorderapp.data.model.Order
  * Created by bigman212 on 28.02.2018.
  **/
 interface OrderDetailContract {
-    interface View : MvpView<Presenter> {
-        fun showOrder(order: Order)
-    }
 
     interface Presenter : MvpPresenter {
         fun loadOrderById(id: Int)
         fun updateOrder(id: Int, status: Status)
     }
+
+    interface View : MvpView<Presenter> {
+        fun updateView(order: Order?)
+    }
+
 }

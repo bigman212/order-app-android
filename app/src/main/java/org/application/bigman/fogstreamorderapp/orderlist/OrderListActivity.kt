@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.View
 import kotlinx.android.synthetic.main.activity_order_list.*
 import org.application.bigman.fogstreamorderapp.R
 import org.application.bigman.fogstreamorderapp.data.OrderRepository
@@ -29,7 +28,8 @@ class OrderListActivity : AppCompatActivity(), OrderListContract.View, SwipeRefr
         mAdapter = OrderListAdapter(this)
         rv_orders.adapter = mAdapter
         mPresenter = OrderListPresenter(this, OrderRepository)
-        swipe_container.setOnRefreshListener(this)
+        swipe_order_list.setOnRefreshListener(this)
+        mPresenter.getAllOrders()
     }
 
     override fun setPresenter(presenter: OrderListContract.Presenter) {
@@ -37,11 +37,11 @@ class OrderListActivity : AppCompatActivity(), OrderListContract.View, SwipeRefr
     }
 
     override fun showProgress() {
-        swipe_container.visibility = View.VISIBLE
+        swipe_order_list.isRefreshing = true
     }
 
     override fun hideProgress() {
-        swipe_container.isRefreshing = false
+        swipe_order_list.isRefreshing = false
     }
 
     override fun updateView(orders: List<Order>) {

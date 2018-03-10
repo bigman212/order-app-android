@@ -9,4 +9,5 @@ import org.application.bigman.fogstreamorderapp.data.model.Order
  **/
 interface DataSource {
     fun getOrders(): Observable<List<Order>>?
+    fun getOrderById(id: Int): Observable<List<Order>>?
 }
