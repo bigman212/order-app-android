@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_order_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -70,16 +71,22 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/b_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="12dp"
-                android:text="Взять" />
+                android:text="Взять"
+                android:textAlignment="center" />
 
             <Button
+                android:id="@+id/b_finish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
-                android:text="Завершить" />
+                android:enabled="false"
+                android:text="Завершить"
+                android:textAlignment="center"
+                tools:enabled="true" />
         </LinearLayout>
 
     </LinearLayout>

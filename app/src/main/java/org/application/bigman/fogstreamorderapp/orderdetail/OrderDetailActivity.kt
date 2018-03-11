@@ -16,9 +16,10 @@ inline fun <T : Any, R> whenNotNull(input: T?, callback: (T) -> R): R? {
     return input?.let(callback)
 }
 
-class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View, SwipeRefreshLayout.OnRefreshListener {
+class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View,
+        SwipeRefreshLayout.OnRefreshListener {
+
     private lateinit var mPresenter: OrderDetailContract.Presenter
-    private lateinit var mCurrentOrder: Order
 
     override fun onStart() {
         super.onStart()
@@ -34,10 +35,10 @@ class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View, Swipe
 
     override fun updateView(order: Order?) {
         if (order != null) {
-            mCurrentOrder = order
             tv_date_detail.text = order.date
-            tv_from_detail.text = order.from
-            tv_to_detail.text = order.to
+            tv_from_detail.text = order.from.name
+            tv_to_detail.text = order.to.name
+
         }
     }
 
@@ -51,5 +52,13 @@ class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View, Swipe
 
     override fun onRefresh() {
         mPresenter.loadOrderById(0)
+    }
+
+    override fun setEnabledStartButton(enabledValue: Boolean) {
+        b_start.isEnabled = enabledValue
+    }
+
+    override fun setEnabledFinishButton(enabledValue: Boolean) {
+        b_finish.isEnabled = enabledValue
     }
 }

@@ -9,7 +9,7 @@ import retrofit2.http.GET
  * org.application.bigman.fogstreamorderapp
  * Created by bigman212 on 25.02.2018.
  **/
-interface OrderService {
+interface OrderApi {
     @GET("/orders")
     fun getOrders(): Observable<List<Order>>
 }

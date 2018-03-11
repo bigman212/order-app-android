@@ -55,9 +55,9 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindForecast(order: Order) {
-            itemView.tv_order_date.text = order.date.toString()
-            itemView.tv_order_from.text = order.from
-            itemView.tv_order_to.text = order.to
+            itemView.tv_order_date.text = order.date
+            itemView.tv_order_from.text = order.from.name
+            itemView.tv_order_to.text = order.to.name
         }
     }
 }
