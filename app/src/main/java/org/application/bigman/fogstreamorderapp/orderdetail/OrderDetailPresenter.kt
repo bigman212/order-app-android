@@ -1,10 +1,12 @@
 package org.application.bigman.fogstreamorderapp.orderdetail
 
-import android.os.Handler
+import android.util.Log
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import org.application.bigman.fogstreamorderapp.data.DataSource
-import org.application.bigman.fogstreamorderapp.data.OrderRepository
 import org.application.bigman.fogstreamorderapp.data.model.Order
-import org.application.bigman.fogstreamorderapp.data.model.Status
 
 /**
  * org.application.bigman.fogstreamorderapp.orderdetail
@@ -20,42 +22,29 @@ class OrderDetailPresenter(private val mView: OrderDetailContract.View,
         mView.setPresenter(this)
     }
 
-    override fun loadOrderById(id: Int) {
-        mView.showProgress()
+    override fun getOrderById(id: Int) {
+        mDataSource.getOrderById(id.toString())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<Order> {
+                    override fun onComplete() {
+                        mView.hideProgress()
+                    }
 
-        Handler().postDelayed(Runnable {
-            currentOrder = findOrderById(id)
-            if (currentOrder != null) {
-                checkStatus(currentOrder!!.status)
-                mView.updateView(currentOrder)
-            } else {
+                    override fun onSubscribe(d: Disposable) {
+                        mView.showProgress()
+                    }
 
-            }
-            mView.hideProgress()
-        }, 3000)
+                    override fun onNext(t: Order) {
+                        mView.updateView(t)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.d("TAG", e.message)
+                    }
+                })
     }
 
-    private fun checkStatus(status: Status) { //засунуть ли вызов этой функции в activity
-        when (status) {
-            Status.DELIVERING -> mView.setEnabledStartButton(false)
-            Status.FINISHED -> mView.setEnabledFinishButton(false)
-            Status.NOT_STARTED -> {
-                mView.setEnabledStartButton(true)
-                mView.setEnabledFinishButton(false)
-            }
-        }
-    }
-
-    private fun findOrderById(id: Int): Order? {
-        var value: Order? = null
-        OrderRepository.data.forEach {
-            if (it.date == "12-12-12")
-                value = it
-        }
-        return value
-    }
-
-
-    override fun sendNewStatus(id: Int, status: Status) {
+    override fun sendNewStatus(status: Int) {
     }
 }

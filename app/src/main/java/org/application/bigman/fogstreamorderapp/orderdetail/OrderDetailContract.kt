@@ -3,7 +3,7 @@ package org.application.bigman.fogstreamorderapp.orderdetail
 import org.application.bigman.fogstreamorderapp.MvpPresenter
 import org.application.bigman.fogstreamorderapp.MvpView
 import org.application.bigman.fogstreamorderapp.data.model.Order
-import org.application.bigman.fogstreamorderapp.data.model.Status
+
 
 
 /**
@@ -13,10 +13,9 @@ import org.application.bigman.fogstreamorderapp.data.model.Status
 interface OrderDetailContract {
 
     interface Presenter : MvpPresenter {
-        fun loadOrderById(id: Int)
-        fun sendNewStatus(id: Int, status: Status)
+        fun getOrderById(id: Int)
+        fun sendNewStatus(status: Int)
     }
-
 
     interface View : MvpView<Presenter> {
         fun updateView(order: Order?)

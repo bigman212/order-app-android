@@ -16,7 +16,7 @@ class AuthActivity : AppCompatActivity() {
         setContentView(R.layout.activity_auth)
 
         b_login.setOnClickListener {
-            //            ApiFactory.getAuthClient().authorize(Credentials.basic("login", "password"))
+            //            ApiProvider.getAuthClient().authorize(Credentials.basic("login", "password"))
         }
     }
 

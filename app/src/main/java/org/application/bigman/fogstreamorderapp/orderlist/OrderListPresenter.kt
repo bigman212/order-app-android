@@ -1,8 +1,11 @@
 package org.application.bigman.fogstreamorderapp.orderlist
 
-import android.os.Handler
+import android.util.Log
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import org.application.bigman.fogstreamorderapp.data.DataSource
-import org.application.bigman.fogstreamorderapp.data.OrderRepository
 import org.application.bigman.fogstreamorderapp.data.model.Order
 
 /**
@@ -16,14 +19,25 @@ class OrderListPresenter(private val mView: OrderListContract.View,
     }
 
     override fun getAllOrders() {
-        val orders = ArrayList<Order>()
-        mView.showProgress()
+        mDataManager.getAllUserOrders(0)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<List<Order>> {
+                    override fun onComplete() {
+                        mView.hideProgress()
+                    }
 
-        Handler().postDelayed(Runnable {
-            mView.updateView(OrderRepository.data)
-            mView.hideProgress()
-        }, 3000)
+                    override fun onSubscribe(d: Disposable) {
+                        mView.showProgress()
+                    }
 
-        mView.updateView(orders)
+                    override fun onNext(t: List<Order>) {
+                        mView.updateView(t)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.d("TAG", e.message)
+                    }
+                })
     }
 }

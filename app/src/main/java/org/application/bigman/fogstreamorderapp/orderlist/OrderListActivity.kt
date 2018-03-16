@@ -12,10 +12,6 @@ import org.application.bigman.fogstreamorderapp.data.model.Order
 
 
 class OrderListActivity : AppCompatActivity(), OrderListContract.View, SwipeRefreshLayout.OnRefreshListener {
-    override fun onRefresh() {
-        mPresenter.getAllOrders()
-    }
-
     private lateinit var mPresenter: OrderListContract.Presenter
     private lateinit var mAdapter: OrderListAdapter
 
@@ -46,5 +42,9 @@ class OrderListActivity : AppCompatActivity(), OrderListContract.View, SwipeRefr
 
     override fun updateView(orders: List<Order>) {
         mAdapter.updateData(orders)
+    }
+
+    override fun onRefresh() {
+        mPresenter.getAllOrders()
     }
 }

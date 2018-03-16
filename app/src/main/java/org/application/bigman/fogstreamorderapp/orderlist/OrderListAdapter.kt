@@ -15,6 +15,7 @@ import org.application.bigman.fogstreamorderapp.orderdetail.OrderDetailActivity
  * org.application.bigman.fogstreamorderapp
  * Created by bigman212 on 20.02.2018.
  **/
+
 class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<OrderListAdapter.ViewHolder>() {
     /**
      * Создание новых View и ViewHolder элемента списка, которые впоследствии могут переиспользоваться.
@@ -27,6 +28,7 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
         val orderViewHolder = ViewHolder(view)
         orderViewHolder.itemView.setOnClickListener {
             val intent = Intent(mContext, OrderDetailActivity::class.java)
+            intent.putExtra("orderId", mOrdersList[i].id)
             mContext.startActivity(intent)
         }
 
@@ -55,9 +57,9 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindForecast(order: Order) {
-            itemView.tv_order_date.text = order.date
-            itemView.tv_order_from.text = order.from.name
-            itemView.tv_order_to.text = order.to.name
+            itemView.tv_order_date.text = order.dateOfOrderCreation
+            itemView.tv_order_from.text = order.startAddress!!.address
+            itemView.tv_order_to.text = order.endAddress!!.address
         }
     }
 }

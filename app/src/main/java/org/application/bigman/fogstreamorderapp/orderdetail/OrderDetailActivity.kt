@@ -12,13 +12,12 @@ import org.application.bigman.fogstreamorderapp.data.model.Order
  * Created by bigman212 on 10.03.2018.
  **/
 
-inline fun <T : Any, R> whenNotNull(input: T?, callback: (T) -> R): R? {
+inline fun <T : Any, R> whenNotNull(input: T?, callback: (T) -> R): R? { // КАК ТЕБЕ ТАКОЕ ИЛОН МАСК
     return input?.let(callback)
 }
 
 class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View,
         SwipeRefreshLayout.OnRefreshListener {
-
     private lateinit var mPresenter: OrderDetailContract.Presenter
 
     override fun onStart() {
@@ -26,7 +25,7 @@ class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View,
         setContentView(R.layout.activity_order_detail)
         swipe_order_detail.setOnRefreshListener(this)
         mPresenter = OrderDetailPresenter(this, OrderRepository)
-        mPresenter.loadOrderById(0)
+        mPresenter.getOrderById(intent.getIntExtra("orderId", 10))
     }
 
     override fun setPresenter(presenter: OrderDetailContract.Presenter) {
@@ -35,10 +34,9 @@ class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View,
 
     override fun updateView(order: Order?) {
         if (order != null) {
-            tv_date_detail.text = order.date
-            tv_from_detail.text = order.from.name
-            tv_to_detail.text = order.to.name
-
+            tv_date_detail.text = order.dateOfOrderCreation
+            tv_from_detail.text = order.startAddress!!.address
+            tv_to_detail.text = order.endAddress!!.address
         }
     }
 
@@ -51,7 +49,7 @@ class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View,
     }
 
     override fun onRefresh() {
-        mPresenter.loadOrderById(0)
+        mPresenter.getOrderById(intent.getIntExtra("orderId", 10))
     }
 
     override fun setEnabledStartButton(enabledValue: Boolean) {
