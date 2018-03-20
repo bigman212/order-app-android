@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName
  * org.application.bigman.fogstreamorderapp.data.model
  * Created by bigman212 on 11.03.2018.
  **/
+
 class Address {
     @SerializedName("address")
     @Expose
@@ -36,4 +37,20 @@ class Order {
     @SerializedName("date_of_order_creation")
     @Expose
     var dateOfOrderCreation: String? = null
+}
+
+class StatusChangeResponse {
+    @SerializedName("code")
+    @Expose
+    var code: Int? = null
+
+    @SerializedName("message")
+    @Expose
+    var message: String? = null
+}
+
+object CurrentUser {
+    lateinit var username: String
+    lateinit var password: String
+    lateinit var token: String
 }
