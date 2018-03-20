@@ -17,38 +17,26 @@ import org.application.bigman.fogstreamorderapp.orderdetail.OrderDetailActivity
  **/
 
 class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<OrderListAdapter.ViewHolder>() {
-    /**
-     * Создание новых View и ViewHolder элемента списка, которые впоследствии могут переиспользоваться.
-     */
 
-    private var mOrdersList: List<Order> = ArrayList()
+    private var mItems: List<Order> = arrayListOf()
+
+    fun updateData(orders: List<Order>) {
+        mItems = orders
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.recycler_item, viewGroup, false)
-        val orderViewHolder = ViewHolder(view)
-        orderViewHolder.itemView.setOnClickListener {
-            val intent = Intent(mContext, OrderDetailActivity::class.java)
-            intent.putExtra("orderId", mOrdersList[i].id)
-            mContext.startActivity(intent)
-        }
-
-        return orderViewHolder
+        val holder = ViewHolder(view)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindForecast(mOrdersList[position])
+        holder.bindForecast(mItems[position])
     }
 
-    /**
-     * Заполнение виджетов View данными из элемента списка с номером i
-     */
     override fun getItemCount(): Int {
-        return mOrdersList.size
-    }
-
-    fun updateData(orders: List<Order>) {
-        mOrdersList = orders
-        notifyDataSetChanged()
+        return mItems.size
     }
 
     /**
@@ -56,10 +44,19 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
      */
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var clickPosition = 0
+
         fun bindForecast(order: Order) {
-            itemView.tv_order_date.text = order.dateOfOrderCreation
+            itemView.tv_order_date.text = order.dateOfOrderCreation //TODO (models)
             itemView.tv_order_from.text = order.startAddress!!.address
             itemView.tv_order_to.text = order.endAddress!!.address
+            clickPosition = order.id!!
+            itemView.setOnClickListener {
+                //КОСТЫЛЬ TODO
+                val intent = Intent(it.context, OrderDetailActivity::class.java)
+                intent.putExtra("orderId", this.clickPosition)
+                it.context.startActivity(intent)
+            }
         }
     }
 }

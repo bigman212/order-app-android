@@ -12,14 +12,15 @@ import org.application.bigman.fogstreamorderapp.data.model.Order
  * org.application.bigman.fogstreamorderapp
  * Created by bigman212 on 22.02.2018.
  **/
+
 class OrderListPresenter(private val mView: OrderListContract.View,
                          private val mDataManager: DataSource) : OrderListContract.Presenter {
     init {
         mView.setPresenter(this)
     }
 
-    override fun getAllOrders() {
-        mDataManager.getAllUserOrders(0)
+    override fun getAllOrders() {   //Возвращать ли
+        mDataManager.getAllUserOrders()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<List<Order>> {
@@ -37,6 +38,8 @@ class OrderListPresenter(private val mView: OrderListContract.View,
 
                     override fun onError(e: Throwable) {
                         Log.d("TAG", e.message)
+                        mView.hideProgress()
+                        mView.showError(e.message!!) // TODO
                     }
                 })
     }

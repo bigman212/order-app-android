@@ -9,4 +9,5 @@ interface MvpView<P : MvpPresenter> {
     fun setPresenter(presenter: P)
     fun showProgress()
     fun hideProgress()
+    fun showError(message: String)
 }

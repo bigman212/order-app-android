@@ -1,10 +1,12 @@
 package org.application.bigman.fogstreamorderapp.data.source.remote
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import io.reactivex.Observable
 import org.application.bigman.fogstreamorderapp.data.model.Order
-import org.json.JSONObject
-import retrofit2.http.GET
-import retrofit2.http.Path
+import org.application.bigman.fogstreamorderapp.data.model.StatusChangeResponse
+import retrofit2.Call
+import retrofit2.http.*
 
 
 /**
@@ -13,14 +15,26 @@ import retrofit2.http.Path
  **/
 interface OrderApi {
     @GET("/orders/")
-    fun getAllUserOrders(): Observable<List<Order>>
+    fun getAllUserOrders(@Header("Authorization") token: String): Observable<List<Order>>
 
     @GET("/orders/{id}/")
-    fun getOrderById(@Path("id") id: String): Observable<Order>
+    fun getOrderById(@Header("Authorization") token: String, @Path("id") id: Int): Observable<Order>
 
     @GET("/orders/{id}/start/")
-    fun startOrder(@Path("id") id: String): Observable<JSONObject>
+    fun startOrder(@Header("Authorization") token: String, @Path("id") id: Int): Observable<StatusChangeResponse>
 
     @GET("/orders/{id}/finish/")
-    fun finishOrder(@Path("id") id: String): Observable<JSONObject>
+    fun finishOrder(@Header("Authorization") token: String, @Path("id") id: Int): Observable<StatusChangeResponse>
+
+    @FormUrlEncoded
+    @POST("/log-in/")
+    fun authorize(
+            @Field("username") username: String,
+            @Field("password") password: String): Call<TokenResp>
+}
+
+class TokenResp {
+    @SerializedName("token")
+    @Expose
+    var token: String? = null
 }
