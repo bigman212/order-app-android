@@ -33,6 +33,7 @@ package org.application.bigman.fogstreamorderapp.data
 object Constants {
     const val ORDER_ID = "orderId"
     const val DEFAULT_VALUE = 0
+    const val UNKNOWN_ERROR = "Неизвестная ошибка, пожалуйста попробуйте позднее"
 
     object Status {
         const val AVAILABLE = 0

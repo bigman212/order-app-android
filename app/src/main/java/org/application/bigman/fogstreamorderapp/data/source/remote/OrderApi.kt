@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName
 import io.reactivex.Observable
 import org.application.bigman.fogstreamorderapp.data.model.Order
 import org.application.bigman.fogstreamorderapp.data.model.StatusChangeResponse
-import retrofit2.Call
 import retrofit2.http.*
 
 
@@ -30,7 +29,10 @@ interface OrderApi {
     @POST("/log-in/")
     fun authorize(
             @Field("username") username: String,
-            @Field("password") password: String): Call<TokenResp>
+            @Field("password") password: String): Observable<TokenResp>
+//
+//    @POST("/log-in/")
+//    fun authorize(@Body user: CurrentUser): Observable<TokenResp>
 }
 
 class TokenResp {

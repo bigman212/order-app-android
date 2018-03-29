@@ -2,6 +2,7 @@ package org.application.bigman.fogstreamorderapp.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import org.application.bigman.fogstreamorderapp.data.Constants
 
 
 /**
@@ -21,7 +22,17 @@ class Address {
     var longitude: Double? = null
 }
 
-class Order {
+class Order : Comparable<Order> {
+    override fun compareTo(other: Order): Int {
+        return when {
+            other.status == Constants.Status.AVAILABLE -> 0
+            other.status == Constants.Status.PERFORMING -> 1
+            other.status == Constants.Status.DONE -> -1
+            else -> {
+                0
+            }
+        }
+    }
     @SerializedName("id")
     @Expose
     var id: Int? = null
@@ -52,5 +63,5 @@ class StatusChangeResponse {
 object CurrentUser {
     lateinit var username: String
     lateinit var password: String
-    lateinit var token: String
+    var token: String? = null
 }

@@ -10,7 +10,7 @@ import org.application.bigman.fogstreamorderapp.data.DataSource
 import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
 import org.application.bigman.fogstreamorderapp.data.model.Order
 import org.application.bigman.fogstreamorderapp.data.model.StatusChangeResponse
-import org.application.bigman.fogstreamorderapp.network.ApiProvider
+import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProvider
 
 /**
  * org.application.bigman.fogstreamorderapp.orderdetail
@@ -48,6 +48,7 @@ class OrderDetailPresenter(private val mView: OrderDetailContract.View,
 
                     override fun onError(e: Throwable) {
                         Log.d("TAG", e.message)
+                        mView.showError(e.message ?: Constants.UNKNOWN_ERROR)
                     }
                 })
     }
@@ -64,30 +65,33 @@ class OrderDetailPresenter(private val mView: OrderDetailContract.View,
             }
             Constants.Status.DONE -> {
                 mView.setEnabledFinishButton(enabledValue = false)
+                mView.setEnabledStartButton(enabledValue = false)
             }
         }
     }
 
     override fun sendNewStatus(status: Int) {
-        with(ApiProvider.orderClient) {
-            when (status) {
-                Constants.Status.PERFORMING -> {
-                    startOrder(CurrentUser.token, currentOrder.id!!)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(StatusChangeCallback(mView))
-                    //обработка ошибки при нажатии, отмене и т.д.
-                }
+        if (CurrentUser.token != null) {
+            with(ApiProvider.orderClient) {
+                when (status) {
+                    Constants.Status.PERFORMING -> {
+                        startOrder(CurrentUser.token!!, currentOrder.id!!)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(StatusChangeCallback(mView))
+                        //обработка ошибки при нажатии, отмене и т.д.
+                    }
 
-                Constants.Status.DONE -> {
-                    finishOrder(CurrentUser.token, currentOrder.id!!)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(StatusChangeCallback(mView))
-                }
-                else -> {
-                    mView.showError("Неизвестная ошибка при отправке запроса, попробуйте еще раз.")
-                    return
+                    Constants.Status.DONE -> {
+                        finishOrder(CurrentUser.token!!, currentOrder.id!!)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(StatusChangeCallback(mView))
+                    }
+                    else -> {
+                        mView.showError(Constants.UNKNOWN_ERROR)
+                        return
+                    }
                 }
             }
         }
@@ -107,11 +111,11 @@ private class StatusChangeCallback(private val presenterView: OrderDetailContrac
     }
 
     override fun onNext(t: StatusChangeResponse) {
-        presenterView.showError(t.message ?: "Нулевой ответ, попробуйте еще раз.")
+        presenterView.showError(t.message ?: "Нулевой ответ, попробуйте еще раз позже.")
     }
 
     override fun onError(e: Throwable) {
-        presenterView.showError(e.message ?: "Неизвестная ошибка, попробуйте еще раз.")
+        presenterView.showError(e.message ?: Constants.UNKNOWN_ERROR)
     }
 }
 

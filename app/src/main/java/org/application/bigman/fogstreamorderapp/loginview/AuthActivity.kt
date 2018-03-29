@@ -3,51 +3,67 @@ package org.application.bigman.fogstreamorderapp.loginview
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_auth.*
 import org.application.bigman.fogstreamorderapp.R
 import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
+import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProvider
 import org.application.bigman.fogstreamorderapp.data.source.remote.TokenResp
-import org.application.bigman.fogstreamorderapp.network.ApiProvider
 import org.application.bigman.fogstreamorderapp.orderlist.OrderListActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 /**
  * org.application.bigman.fogstreamorderapp.auth
  * Created by bigman212 on 10.03.2018.
  **/
-class AuthActivity : AppCompatActivity() {
+
+// TODO SAVE TOKEN IN SHARED PREFERENCES
+
+class AuthActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
+        b_login.setOnClickListener(this)
+    }
 
-        b_login.setOnClickListener {
-            val login = et_login.text.toString()
-            val password = et_password.text.toString()
+    private fun fieldsNotEmpty(loginField: EditText, passwordField: EditText): Boolean {
+        return !TextUtils.isEmpty(loginField.text.toString())
+                && !TextUtils.isEmpty(passwordField.text.toString())
+    }
 
-            ApiProvider.orderClient.authorize(login, password)
-                    .enqueue(object : Callback<TokenResp?> {
-                        override fun onFailure(call: Call<TokenResp?>?, t: Throwable?) {
-                            println(call.toString())
+    override fun onClick(button: View?) {
+        if (fieldsNotEmpty(et_login, et_password)) {
+            CurrentUser.password = et_password.text.toString()
+            CurrentUser.username = et_login.text.toString()
+
+            ApiProvider.orderClient.authorize(et_login.text.toString(), et_password.text.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<TokenResp> {
+                        override fun onSubscribe(d: Disposable) {
                         }
 
-                        override fun onResponse(call: Call<TokenResp?>?, response: Response<TokenResp?>?) {
-                            if (response != null) {
-                                println(response.raw().toString())
+                        override fun onNext(t: TokenResp) {
+                            if (t.token != null) {
+                                val authType = "Token "
+                                CurrentUser.token = authType + t.token
+                                startActivity(Intent(baseContext, OrderListActivity::class.java))
+                                finish()
                             }
-                            if (response != null) {
-                                if (response.body() != null) {
-                                    println(response.body()!!.token)
-                                    CurrentUser.username = login
-                                    CurrentUser.password = password
-                                    CurrentUser.token = "Token "
-                                    CurrentUser.token = CurrentUser.token + response.body()!!.token!!
-                                    val intent = Intent(baseContext, OrderListActivity::class.java)
-                                    startActivity(intent)
-                                }
-                            }
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
+                        }
+
+                        override fun onComplete() {
                         }
                     })
         }

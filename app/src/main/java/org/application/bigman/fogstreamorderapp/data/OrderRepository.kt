@@ -3,7 +3,7 @@ package org.application.bigman.fogstreamorderapp.data
 import io.reactivex.Observable
 import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
 import org.application.bigman.fogstreamorderapp.data.model.Order
-import org.application.bigman.fogstreamorderapp.network.ApiProvider
+import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProvider
 
 /**
  * org.application.bigman.fogstreamorderapp
@@ -13,7 +13,7 @@ import org.application.bigman.fogstreamorderapp.network.ApiProvider
 object OrderRepository : DataSource {
 
     override fun getAllUserOrders(): Observable<List<Order>> {
-        return ApiProvider.orderClient.getAllUserOrders(CurrentUser.token).doOnNext {
+        return ApiProvider.orderClient.getAllUserOrders(CurrentUser.token!!).doOnNext {
             it.forEach {
                 it.dateOfOrderCreation = this.parseDate(it.dateOfOrderCreation!!)
             }
@@ -21,7 +21,7 @@ object OrderRepository : DataSource {
     }
 
     override fun getOrderById(id: Int): Observable<Order> {
-        return ApiProvider.orderClient.getOrderById(CurrentUser.token, id).doOnNext {
+        return ApiProvider.orderClient.getOrderById(CurrentUser.token!!, id).doOnNext {
             it.dateOfOrderCreation = parseDate(it.dateOfOrderCreation)
         }
     }
