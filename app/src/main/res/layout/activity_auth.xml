@@ -2,27 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingTop="56dp">
 
-    <EditText
-        android:id="@+id/et_login"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="driver_1" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
 
-    <EditText
-        android:id="@+id/et_password"
+        <EditText
+            android:id="@+id/et_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Логин"
+            android:inputType="textPersonName" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="QWERTY676" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
 
-    <Button
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Пароль"
+            android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/b_login"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="24dp"
+        android:padding="12dp"
+        android:text="Войти" />
+
 </LinearLayout>

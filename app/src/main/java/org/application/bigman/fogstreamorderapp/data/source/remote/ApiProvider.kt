@@ -27,7 +27,8 @@ class HeaderInterceptor : Interceptor {
 object ApiProvider {
     val orderClient: OrderApi
 
-    private const val BASE_URL = "http://10.0.2.2:8000"
+    private const val BASE_URL = "http://10.0.3.2:8000"
+
     private var retrofitInstance: Retrofit? = null
 
     init {
