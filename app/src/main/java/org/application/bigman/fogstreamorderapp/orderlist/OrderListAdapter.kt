@@ -35,12 +35,6 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindForecast(mItems[position])
-
-        holder.itemView.setOnClickListener {
-            val intent = Intent(it.context, OrderDetailActivity::class.java)
-            intent.putExtra("orderId", holder.adapterPosition + 1)
-            it.context.startActivity(intent)
-        }
     }
 
     override fun getItemCount(): Int {
@@ -52,7 +46,17 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
      */
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private var orderId = 0
+
+        init {
+            itemView.setOnClickListener {
+                val intent = Intent(it.context, OrderDetailActivity::class.java)
+                intent.putExtra("orderId", orderId)
+                it.context.startActivity(intent)
+            }
+        }
         fun bindForecast(order: Order) {
+            orderId = order.id ?: 0
             if (order.status == Constants.Status.PERFORMING) {
                 itemView.setBackgroundColor(Color.YELLOW)
             }
