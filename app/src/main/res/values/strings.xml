@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FogStreamOrderApp</string>
+    <string name="auth_error">Неправильный логин или пароль</string>
 </resources>
