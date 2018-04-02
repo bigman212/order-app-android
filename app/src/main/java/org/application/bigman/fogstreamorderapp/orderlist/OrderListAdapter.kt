@@ -22,15 +22,9 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
 
     private var mItems: List<Order> = arrayListOf()
 
-    fun updateData(orders: List<Order>) {
-        mItems = orders.sorted()
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.recycler_item, viewGroup, false)
-        val holder = ViewHolder(view)
-        return holder
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -39,6 +33,11 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
 
     override fun getItemCount(): Int {
         return mItems.size
+    }
+
+    fun updateData(orders: List<Order>) {
+        mItems = orders.sorted()
+        notifyDataSetChanged()
     }
 
     /**
@@ -55,14 +54,15 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
                 it.context.startActivity(intent)
             }
         }
+
         fun bindForecast(order: Order) {
             orderId = order.id ?: 0
             if (order.status == Constants.Status.PERFORMING) {
                 itemView.setBackgroundColor(Color.YELLOW)
             }
             itemView.tv_order_date.text = order.dateOfOrderCreation //TODO (models)
-            itemView.tv_order_from.text = order.startAddress!!.address
-            itemView.tv_order_to.text = order.endAddress!!.address
+            itemView.tv_order_from.text = order.startAddress?.address
+            itemView.tv_order_to.text = order.endAddress?.address
         }
     }
 }

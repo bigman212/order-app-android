@@ -26,7 +26,7 @@ class Order : Comparable<Order> {
     override fun compareTo(other: Order): Int {
         return when {
             other.status == Constants.Status.AVAILABLE -> 0
-            other.status == Constants.Status.PERFORMING -> 1
+            other.status == Constants.Status.AVAILABLE -> 1
             other.status == Constants.Status.DONE -> -1
             else -> {
                 0
@@ -48,6 +48,13 @@ class Order : Comparable<Order> {
     @SerializedName("date_of_order_creation")
     @Expose
     var dateOfOrderCreation: String? = null
+}
+
+
+class AuthResponse {
+    @SerializedName("token")
+    @Expose
+    var token: String? = null
 }
 
 class StatusChangeResponse {

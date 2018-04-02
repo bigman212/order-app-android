@@ -13,9 +13,9 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_auth.*
 import org.application.bigman.fogstreamorderapp.R
+import org.application.bigman.fogstreamorderapp.data.model.AuthResponse
 import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
 import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProvider
-import org.application.bigman.fogstreamorderapp.data.source.remote.TokenResp
 import org.application.bigman.fogstreamorderapp.orderlist.OrderListActivity
 
 /**
@@ -46,11 +46,11 @@ class AuthActivity : AppCompatActivity(), View.OnClickListener {
             ApiProvider.orderClient.authorize(et_login.text.toString(), et_password.text.toString())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<TokenResp> {
+                    .subscribe(object : Observer<AuthResponse> {
                         override fun onSubscribe(d: Disposable) {
                         }
 
-                        override fun onNext(t: TokenResp) {
+                        override fun onNext(t: AuthResponse) {
                             if (t.token != null) {
                                 val authType = "Token "
                                 CurrentUser.token = authType + t.token
@@ -60,7 +60,7 @@ class AuthActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                         override fun onError(e: Throwable) {
-                            Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
+                            Toast.makeText(baseContext, getString(R.string.auth_error), Toast.LENGTH_LONG).show()
                         }
 
                         override fun onComplete() {
