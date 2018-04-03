@@ -48,6 +48,15 @@ class Order : Comparable<Order> {
     @SerializedName("date_of_order_creation")
     @Expose
     var dateOfOrderCreation: String? = null
+
+    fun statusToString(): String {
+        return when (status) {
+            Constants.Status.AVAILABLE -> "Доступна"
+            Constants.Status.PERFORMING -> "Выполняется"
+            Constants.Status.DONE -> "Выполнена"
+            else -> "Статус неизвестен"
+        }
+    }
 }
 
 

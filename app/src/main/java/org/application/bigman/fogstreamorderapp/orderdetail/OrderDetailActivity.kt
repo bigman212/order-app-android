@@ -43,9 +43,10 @@ class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View {
 
     override fun updateView(order: Order?) {
         if (order != null) {
-            tv_date_detail.text = order.dateOfOrderCreation
-            tv_from_detail.text = order.startAddress!!.address //TODO
-            tv_to_detail.text = order.endAddress!!.address
+            tv_title_detail.text = "Заказ №${order.id} (${order.dateOfOrderCreation})"
+            tv_status_detail.text = order.statusToString()
+            tv_from_detail.text = order.startAddress?.address //TODO
+            tv_to_detail.text = order.endAddress?.address
         }
     }
 

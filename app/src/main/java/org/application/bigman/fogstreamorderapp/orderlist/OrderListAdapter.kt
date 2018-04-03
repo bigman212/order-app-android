@@ -2,7 +2,7 @@ package org.application.bigman.fogstreamorderapp.orderlist
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.Paint
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +12,7 @@ import org.application.bigman.fogstreamorderapp.R
 import org.application.bigman.fogstreamorderapp.data.Constants
 import org.application.bigman.fogstreamorderapp.data.model.Order
 import org.application.bigman.fogstreamorderapp.orderdetail.OrderDetailActivity
+
 
 /**
  * org.application.bigman.fogstreamorderapp
@@ -57,12 +58,17 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
 
         fun bindForecast(order: Order) {
             orderId = order.id ?: 0
-            if (order.status == Constants.Status.PERFORMING) {
-                itemView.setBackgroundColor(Color.YELLOW)
-            }
-            itemView.tv_order_date.text = order.dateOfOrderCreation //TODO (models)
+            val title = "Заказ №$orderId (${order.dateOfOrderCreation})"
+            itemView.tv_order_title.text = title
+            itemView.tv_order_title.paintFlags = Paint.UNDERLINE_TEXT_FLAG
             itemView.tv_order_from.text = order.startAddress?.address
             itemView.tv_order_to.text = order.endAddress?.address
+
+            if (order.status == Constants.Status.PERFORMING) {
+//                val color = ContextCompat.getColor(itemView.tv_order_title.context, R.color.orderPerfoming)
+//                itemView.tv_order_title.setTextColor(color)
+                itemView.tv_order_title.setBackgroundResource(R.color.orderPerfoming)
+            }
         }
     }
 }
