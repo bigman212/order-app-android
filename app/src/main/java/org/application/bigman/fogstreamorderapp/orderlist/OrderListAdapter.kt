@@ -3,6 +3,7 @@ package org.application.bigman.fogstreamorderapp.orderlist
 import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,13 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.recycler_item, viewGroup, false)
-        return ViewHolder(view)
+        val holder = ViewHolder(view)
+        holder.itemView.setOnClickListener {
+            val intent = Intent(it.context, OrderDetailActivity::class.java)
+            intent.putExtra("orderId", holder.orderId)
+            it.context.startActivity(intent)
+        }
+        return holder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -46,28 +53,23 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
      */
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private var orderId = 0
-
-        init {
-            itemView.setOnClickListener {
-                val intent = Intent(it.context, OrderDetailActivity::class.java)
-                intent.putExtra("orderId", orderId)
-                it.context.startActivity(intent)
-            }
-        }
+        var orderId = 0
 
         fun bindForecast(order: Order) {
             orderId = order.id ?: 0
-            val title = "Заказ №$orderId (${order.dateOfOrderCreation})"
-            itemView.tv_order_title.text = title
+
+            itemView.tv_order_title.text = itemView.context.resources.getString(R.string.orderlist_card_title, orderId)
             itemView.tv_order_title.paintFlags = Paint.UNDERLINE_TEXT_FLAG
             itemView.tv_order_from.text = order.startAddress?.address
             itemView.tv_order_to.text = order.endAddress?.address
+            itemView.tv_order_date.text = order.dateOfOrderCreation
 
             if (order.status == Constants.Status.PERFORMING) {
-//                val color = ContextCompat.getColor(itemView.tv_order_title.context, R.color.orderPerfoming)
-//                itemView.tv_order_title.setTextColor(color)
-                itemView.tv_order_title.setBackgroundResource(R.color.orderPerfoming)
+                val color = ContextCompat.getColor(itemView.context, R.color.orderPerfoming)
+                itemView.setBackgroundColor(color)
+            } else {
+                val color = ContextCompat.getColor(itemView.context, R.color.colorPrimary)
+                itemView.setBackgroundColor(color)
             }
         }
     }

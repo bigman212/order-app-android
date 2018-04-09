@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">FogStreamOrderApp</string>
     <string name="auth_error">Неправильный логин или пароль</string>
+    <string name="orderlist_to_title">Куда:</string>
+    <string name="orderlist_to_place">to</string>
+    <string name="orderlist_from_place">where</string>
+    <string name="orderlist_from_title">Откуда:</string>
+    <string name="orderlist_card_date">Дата</string>
+    <string name="orderlist_card_title">Заказ %1d</string>
+    <string name="menu_logout">Выйти</string>
+    <string name="orderlist_toolbar_title">Текущие заказы</string>
+    <string name="orderdetail_toolbar_title">Заказ %1d</string>
+    <string name="sharedprefs_name">orderAppPrefs</string>
+    <string name="auth_token">Token %1s</string>
+    <string name="key_auth_token">auth_token</string>
+    <string name="title_activity_order_map">Map</string>
 </resources>

@@ -15,6 +15,7 @@ interface OrderDetailContract {
     interface Presenter : MvpPresenter {
         fun getOrderById(id: Int)
         fun sendNewStatus(status: Int)
+        fun getDetailOrder(): Order
     }
 
     interface View : MvpView<Presenter> {
