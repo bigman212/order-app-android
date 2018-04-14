@@ -17,6 +17,7 @@ import org.application.bigman.fogstreamorderapp.data.model.AuthResponse
 import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
 import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProvider
 import org.application.bigman.fogstreamorderapp.orderlist.OrderListActivity
+import org.application.bigman.fogstreamorderapp.util.SharedPreferencesHelper
 
 /**
  * org.application.bigman.fogstreamorderapp.auth
@@ -29,8 +30,21 @@ class AuthActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.supportActionBar?.hide()
         setContentView(R.layout.activity_auth)
+        val token: String? = SharedPreferencesHelper.getStringValue(applicationContext, getString(R.string.key_auth_token))
+        if (token != null) {
+            CurrentUser.token = getString(R.string.auth_token, token)
+            println(CurrentUser.token)
+            startActivity(Intent(baseContext, OrderListActivity::class.java))
+            finish()
+        }
         b_login.setOnClickListener(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        SharedPreferencesHelper.valueToNull(applicationContext, getString(R.string.key_auth_token))
     }
 
     private fun fieldsNotEmpty(loginField: EditText, passwordField: EditText): Boolean {
@@ -39,11 +53,13 @@ class AuthActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(button: View?) {
-        if (fieldsNotEmpty(et_login, et_password)) {
-            CurrentUser.password = et_password.text.toString()
-            CurrentUser.username = et_login.text.toString()
+//        if (fieldsNotEmpty(et_login, et_password)) {
+//            CurrentUser.password = et_password.text.toString()
+//            CurrentUser.username = et_login.text.toString()
+        CurrentUser.username = "driver_1"
+        CurrentUser.password = "QWERTY676"
 
-            ApiProvider.orderClient.authorize(et_login.text.toString(), et_password.text.toString())
+        ApiProvider.orderClient.authorize(CurrentUser.username, CurrentUser.password)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(object : Observer<AuthResponse> {
@@ -52,8 +68,8 @@ class AuthActivity : AppCompatActivity(), View.OnClickListener {
 
                         override fun onNext(t: AuthResponse) {
                             if (t.token != null) {
-                                val authType = "Token "
-                                CurrentUser.token = authType + t.token
+                                SharedPreferencesHelper.saveValue(applicationContext, getString(R.string.key_auth_token), t.token!!)
+                                CurrentUser.token = getString(R.string.auth_token, t.token!!)
                                 startActivity(Intent(baseContext, OrderListActivity::class.java))
                                 finish()
                             }
@@ -67,6 +83,6 @@ class AuthActivity : AppCompatActivity(), View.OnClickListener {
                         }
                     })
         }
-    }
+//    }
 
 }

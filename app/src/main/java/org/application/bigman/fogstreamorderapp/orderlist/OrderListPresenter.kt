@@ -6,7 +6,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.application.bigman.fogstreamorderapp.data.DataSource
+import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
 import org.application.bigman.fogstreamorderapp.data.model.Order
+import retrofit2.HttpException
 
 /**
  * org.application.bigman.fogstreamorderapp
@@ -38,8 +40,13 @@ class OrderListPresenter(private val mView: OrderListContract.View,
 
                     override fun onError(e: Throwable) {
                         Log.d("TAG", e.message)
-                        mView.hideProgress()
-                        mView.showError(e.message!!) // TODO
+                        val errorCode = (e as HttpException).code()
+                        if (errorCode == 401) {
+                            CurrentUser.token = null
+                            mView.showError("Вы не авторизованы")
+                        } else if (errorCode == 400) {
+                            mView.showError("Внутренняя ошибка сервера")
+                        }
                     }
                 })
     }

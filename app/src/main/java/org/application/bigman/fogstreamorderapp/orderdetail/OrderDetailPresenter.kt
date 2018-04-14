@@ -11,6 +11,7 @@ import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
 import org.application.bigman.fogstreamorderapp.data.model.Order
 import org.application.bigman.fogstreamorderapp.data.model.StatusChangeResponse
 import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProvider
+import retrofit2.HttpException
 
 /**
  * org.application.bigman.fogstreamorderapp.orderdetail
@@ -20,7 +21,7 @@ import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProvider
 class OrderDetailPresenter(private val mView: OrderDetailContract.View,
                            private val mDataSource: DataSource) : OrderDetailContract.Presenter {
 
-    private var currentOrder: Order = Order()
+    var currentOrder: Order = Order()
 
     init {
         mView.setPresenter(this)
@@ -48,7 +49,13 @@ class OrderDetailPresenter(private val mView: OrderDetailContract.View,
 
                     override fun onError(e: Throwable) {
                         Log.d("TAG", e.message)
-                        mView.showError(e.message ?: Constants.UNKNOWN_ERROR)
+                        val errorCode = (e as HttpException).code()
+                        if (errorCode == 401) {
+                            CurrentUser.token = null
+                            mView.showError("Вы не авторизованы")
+                        } else if (errorCode == 400) {
+                            mView.showError("Внутренняя ошибка сервера")
+                        }
                     }
                 })
     }
@@ -98,6 +105,10 @@ class OrderDetailPresenter(private val mView: OrderDetailContract.View,
         currentOrder.status = status
         initButtons()
     }
+
+    override fun getDetailOrder(): Order {
+        return currentOrder
+    }
 }
 
 
@@ -115,7 +126,13 @@ private class StatusChangeCallback(private val presenterView: OrderDetailContrac
     }
 
     override fun onError(e: Throwable) {
-        presenterView.showError(e.message ?: Constants.UNKNOWN_ERROR)
+        val errorCode = (e as HttpException).code()
+        if (errorCode == 401) {
+            CurrentUser.token = null
+            presenterView.showError("Вы не авторизованы")
+        } else if (errorCode == 400) {
+            presenterView.showError("Внутренняя ошибка сервера")
+        }
     }
 }
 
