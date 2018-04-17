@@ -10,4 +10,9 @@
         android:title="@string/menu_logout"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menu_settings_item"
+        android:title="Настройки"
+        app:showAsAction="never" />
+
 </menu>

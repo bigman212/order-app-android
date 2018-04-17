@@ -14,9 +14,12 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_order_list.*
 import org.application.bigman.fogstreamorderapp.R
 import org.application.bigman.fogstreamorderapp.data.OrderRepository
-import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
 import org.application.bigman.fogstreamorderapp.data.model.Order
+import org.application.bigman.fogstreamorderapp.data.model.TokenHolder
+import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProviderSingleton
+import org.application.bigman.fogstreamorderapp.extension.startActivityAndClearStack
 import org.application.bigman.fogstreamorderapp.loginview.AuthActivity
+import org.application.bigman.fogstreamorderapp.settingsview.SettingsActivity
 import org.application.bigman.fogstreamorderapp.util.SharedPreferencesHelper
 
 
@@ -35,12 +38,19 @@ class OrderListActivity : AppCompatActivity(), OrderListContract.View,
         swipe_order_list.setOnRefreshListener(this)
 
         mPresenter = OrderListPresenter(this, OrderRepository)
-        mPresenter.getAllOrders()
+
     }
 
     override fun onResume() {
         super.onResume()
-        onRefresh()
+        println(ApiProviderSingleton.BASE_URL)
+        mPresenter.getAllOrders()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        mPresenter.getAllOrders()
     }
 
     private fun initRecyclerView() {
@@ -56,12 +66,9 @@ class OrderListActivity : AppCompatActivity(), OrderListContract.View,
     }
 
     private fun tokenValidOrLogout() {
-        if (CurrentUser.token == null) {
+        if (TokenHolder.token == null) {
             SharedPreferencesHelper.valueToNull(applicationContext, getString(R.string.key_auth_token))
-            val intent = Intent(this, AuthActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            this.finish()
+            this.startActivityAndClearStack(AuthActivity::class.java)
         }
     }
 
@@ -75,11 +82,6 @@ class OrderListActivity : AppCompatActivity(), OrderListContract.View,
 
     override fun hideProgress() {
         swipe_order_list.isRefreshing = false
-    }
-
-    override fun onRefresh() {
-        tokenValidOrLogout()
-        mPresenter.getAllOrders()
     }
 
     override fun updateView(orders: List<Order>) {
@@ -99,13 +101,24 @@ class OrderListActivity : AppCompatActivity(), OrderListContract.View,
     override fun onOptionsItemSelected(item: MenuItem?): Boolean = when (item?.itemId) {
         R.id.menu_logout_item -> {
             SharedPreferencesHelper.valueToNull(applicationContext, getString(R.string.key_auth_token))
-            CurrentUser.token = null
+            TokenHolder.token = null
             tokenValidOrLogout()
+            true
+        }
+
+        R.id.menu_settings_item -> {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
             true
         }
         else -> {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onRefresh() {
+        tokenValidOrLogout()
+        mPresenter.getAllOrders()
     }
 
 }

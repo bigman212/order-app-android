@@ -6,6 +6,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import org.application.bigman.fogstreamorderapp.R
@@ -20,11 +21,11 @@ class OrderMapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_map)
 
-        startCoords = Pair(intent.getDoubleExtra("endLat", 0.0),
-                intent.getDoubleExtra("endLng", 0.0))
-
-        endCoords = Pair(intent.getDoubleExtra("startLat", 0.0),
+        startCoords = Pair(intent.getDoubleExtra("startLat", 0.0),
                 intent.getDoubleExtra("startLng", 0.0))
+
+        endCoords = Pair(intent.getDoubleExtra("endLat", 0.0),
+                intent.getDoubleExtra("endLng", 0.0))
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -44,11 +45,18 @@ class OrderMapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
         val fromLocation = LatLng(startCoords.first, startCoords.second)
         val toLocation = LatLng(endCoords.first, endCoords.second)
-        mMap.addMarker(MarkerOptions().position(fromLocation).title("Откуда"))
-        mMap.addMarker(MarkerOptions().position(toLocation).title("Куда"))
+
+        mMap.addMarker(MarkerOptions()
+                .position(fromLocation)
+                .title("Откуда"))
+                .setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        mMap.addMarker(MarkerOptions()
+                .position(toLocation)
+                .title("Куда"))
+                .setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fromLocation, 14.0F))
 
     }

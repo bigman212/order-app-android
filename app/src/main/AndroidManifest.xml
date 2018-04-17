@@ -44,7 +44,8 @@
 
         <activity
             android:name=".orderdetail.OrderMapActivity"
-            android:label="@string/title_activity_order_map"></activity>
+            android:label="@string/title_activity_order_map" />
+        <activity android:name=".settingsview.SettingsActivity" />
     </application>
 
 </manifest>

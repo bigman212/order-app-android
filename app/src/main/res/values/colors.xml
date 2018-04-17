@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#eeeeee</color>
+    <color name="colorPrimary">#536dfe</color>
     <color name="colorPrimaryDark">#ececed</color>
     <color name="colorAccent">#FF4081</color>
     <color name="orderPerfoming">#ff9100</color>
+    <color name="colorButtonStart">#2e7d32</color>
 </resources>

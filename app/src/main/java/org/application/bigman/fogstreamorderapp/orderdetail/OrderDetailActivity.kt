@@ -1,6 +1,8 @@
 package org.application.bigman.fogstreamorderapp.orderdetail
 
 import android.content.Intent
+import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -9,8 +11,9 @@ import kotlinx.android.synthetic.main.activity_order_detail.*
 import org.application.bigman.fogstreamorderapp.R
 import org.application.bigman.fogstreamorderapp.data.Constants
 import org.application.bigman.fogstreamorderapp.data.OrderRepository
-import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
 import org.application.bigman.fogstreamorderapp.data.model.Order
+import org.application.bigman.fogstreamorderapp.data.model.TokenHolder
+import org.application.bigman.fogstreamorderapp.extension.startActivityAndClearStack
 import org.application.bigman.fogstreamorderapp.loginview.AuthActivity
 import org.application.bigman.fogstreamorderapp.util.SharedPreferencesHelper
 
@@ -19,23 +22,16 @@ import org.application.bigman.fogstreamorderapp.util.SharedPreferencesHelper
  * Created by bigman212 on 10.03.2018.
  **/
 
-inline fun <T : Any, R> whenNotNull(input: T?, callback: (T) -> R): R? { // КАК ТЕБЕ ТАКОЕ ИЛОН МАСК
-    return input?.let(callback)
-}
-
-class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View {
+class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View, SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var mPresenter: OrderDetailContract.Presenter
 
-    override fun onStart() {
-        super.onStart()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_detail)
         setSupportActionBar(toolbar_orderdetail)
 
-        tokenValidOrLogout()
-
         mPresenter = OrderDetailPresenter(this, OrderRepository)
-        mPresenter.getOrderById(intent.getIntExtra(Constants.ORDER_ID, Constants.DEFAULT_VALUE))
 
         b_start.setOnClickListener {
             mPresenter.sendNewStatus(Constants.Status.PERFORMING)
@@ -46,22 +42,28 @@ class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        tokenValidOrLogout()
+        val orderId = intent.getIntExtra(Constants.KEY_ORDER_ID, 0)
+        mPresenter.getOrderById(orderId)
+    }
+
+
     private fun tokenValidOrLogout() {
-        if (CurrentUser.token == null) {
+        if (TokenHolder.token == null) {
             SharedPreferencesHelper.valueToNull(applicationContext, getString(R.string.key_auth_token))
-            val intent = Intent(this, AuthActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            this.finish()
+            this.startActivityAndClearStack(AuthActivity::class.java)
         }
     }
 
     override fun updateView(order: Order?) {
         if (order != null) {
-            title = getString(R.string.orderdetail_toolbar_title, order.id)
+            title = getString(R.string.orderdetail_toolbar_title, order.id, order.dateOfOrderCreation).toUpperCase()
             tv_status_detail.text = order.statusToString()
-            tv_from_detail.text = order.startAddress?.address //TODO
+            tv_from_detail.text = order.startAddress?.address
             tv_to_detail.text = order.endAddress?.address
+            tv_comment_detail.text = order.comment
         }
     }
 
@@ -110,5 +112,9 @@ class OrderDetailActivity : AppCompatActivity(), OrderDetailContract.View {
             super.onOptionsItemSelected(item)
             true
         }
+    }
+
+    override fun onRefresh() {
+        mPresenter.getOrderById(mPresenter.getDetailOrder().id!!)
     }
 }

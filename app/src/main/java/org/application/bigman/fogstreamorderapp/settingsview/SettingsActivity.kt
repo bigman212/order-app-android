@@ -1,4 +1,12 @@
-package org.application.bigman.fogstreamorderapp.data
+package org.application.bigman.fogstreamorderapp.settingsview
+
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.preference.PreferenceActivity
+import android.preference.PreferenceManager
+import org.application.bigman.fogstreamorderapp.R
+import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProviderSingleton
+
 
 /*
  * Copyright (c) 2018 
@@ -30,18 +38,31 @@ package org.application.bigman.fogstreamorderapp.data
  * THE SOFTWARE.
  */
 
-object Constants {
-    const val KEY_ORDER_ID = "orderId"
-    const val DEFAULT_VALUE = 0
-    const val UNKNOWN_ERROR = "Невозможно совершить операцию, пожалуйста попробуйте позднее"
-    const val INVALID_AUTH = "Неправильный логин или пароль"
-    const val AUTH_ERROR_STRING = "Вы не авторизованы"
-    const val INTERNAL_SERVER_ERROR = "Внутреняя ошибка сервера"
-
-
-    object Status {
-        const val AVAILABLE = 0
-        const val DONE = 1
-        const val PERFORMING = 2
+class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun onSharedPreferenceChanged(p0: SharedPreferences?, p1: String?) {
+        if (p1?.equals("server_ip") == true) {
+            println("CURRENT IP ${ApiProviderSingleton.BASE_URL}")
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+            ApiProviderSingleton.changeServerIp(sharedPref.getString("server_ip", ""))
+            println("CURRENT IP ${ApiProviderSingleton.BASE_URL}")
+        }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        addPreferencesFromResource(R.xml.preference)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        preferenceScreen.sharedPreferences
+                .registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        preferenceScreen.sharedPreferences
+                .unregisterOnSharedPreferenceChangeListener(this)
+    }
+
 }

@@ -29,7 +29,7 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
         val holder = ViewHolder(view)
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, OrderDetailActivity::class.java)
-            intent.putExtra("orderId", holder.orderId)
+            intent.putExtra(Constants.KEY_ORDER_ID, holder.orderId)
             it.context.startActivity(intent)
         }
         return holder
@@ -63,12 +63,13 @@ class OrderListAdapter(private val mContext: Context) : RecyclerView.Adapter<Ord
             itemView.tv_order_from.text = order.startAddress?.address
             itemView.tv_order_to.text = order.endAddress?.address
             itemView.tv_order_date.text = order.dateOfOrderCreation
+            itemView.tv_order_comment.text = order.comment
 
             if (order.status == Constants.Status.PERFORMING) {
                 val color = ContextCompat.getColor(itemView.context, R.color.orderPerfoming)
                 itemView.setBackgroundColor(color)
             } else {
-                val color = ContextCompat.getColor(itemView.context, R.color.colorPrimary)
+                val color = ContextCompat.getColor(itemView.context, R.color.colorPrimaryDark)
                 itemView.setBackgroundColor(color)
             }
         }

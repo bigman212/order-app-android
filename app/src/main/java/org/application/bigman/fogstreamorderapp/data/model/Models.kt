@@ -10,29 +10,7 @@ import org.application.bigman.fogstreamorderapp.data.Constants
  * Created by bigman212 on 11.03.2018.
  **/
 
-class Address {
-    @SerializedName("address")
-    @Expose
-    var address: String? = null
-    @SerializedName("latitude")
-    @Expose
-    var latitude: Double? = null
-    @SerializedName("longitude")
-    @Expose
-    var longitude: Double? = null
-}
-
 class Order : Comparable<Order> {
-    override fun compareTo(other: Order): Int {
-        return when {
-            other.status == Constants.Status.AVAILABLE -> 0
-            other.status == Constants.Status.AVAILABLE -> 1
-            other.status == Constants.Status.DONE -> -1
-            else -> {
-                0
-            }
-        }
-    }
     @SerializedName("id")
     @Expose
     var id: Int? = null
@@ -48,6 +26,9 @@ class Order : Comparable<Order> {
     @SerializedName("date_of_order_creation")
     @Expose
     var dateOfOrderCreation: String? = null
+    @SerializedName("comment")
+    @Expose
+    var comment: String? = null
 
     fun statusToString(): String {
         return when (status) {
@@ -57,6 +38,27 @@ class Order : Comparable<Order> {
             else -> "Статус неизвестен"
         }
     }
+
+    override fun compareTo(other: Order): Int {
+        return when {
+            this.status == Constants.Status.AVAILABLE -> 1
+            this.status == Constants.Status.PERFORMING -> -1
+            else -> 0
+        }
+    }
+}
+
+
+class Address {
+    @SerializedName("address")
+    @Expose
+    var address: String? = null
+    @SerializedName("latitude")
+    @Expose
+    var latitude: Double? = null
+    @SerializedName("longitude")
+    @Expose
+    var longitude: Double? = null
 }
 
 
@@ -65,6 +67,7 @@ class AuthResponse {
     @Expose
     var token: String? = null
 }
+
 
 class StatusChangeResponse {
     @SerializedName("code")
@@ -76,8 +79,6 @@ class StatusChangeResponse {
     var message: String? = null
 }
 
-object CurrentUser {
-    lateinit var username: String
-    lateinit var password: String
+object TokenHolder {
     var token: String? = null
 }

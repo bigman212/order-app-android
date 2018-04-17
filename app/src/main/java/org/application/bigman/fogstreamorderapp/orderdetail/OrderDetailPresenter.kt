@@ -7,10 +7,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.application.bigman.fogstreamorderapp.data.Constants
 import org.application.bigman.fogstreamorderapp.data.DataSource
-import org.application.bigman.fogstreamorderapp.data.model.CurrentUser
 import org.application.bigman.fogstreamorderapp.data.model.Order
 import org.application.bigman.fogstreamorderapp.data.model.StatusChangeResponse
-import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProvider
+import org.application.bigman.fogstreamorderapp.data.model.TokenHolder
+import org.application.bigman.fogstreamorderapp.data.source.remote.ApiProviderSingleton
 import retrofit2.HttpException
 
 /**
@@ -49,12 +49,18 @@ class OrderDetailPresenter(private val mView: OrderDetailContract.View,
 
                     override fun onError(e: Throwable) {
                         Log.d("TAG", e.message)
-                        val errorCode = (e as HttpException).code()
-                        if (errorCode == 401) {
-                            CurrentUser.token = null
-                            mView.showError("Вы не авторизованы")
-                        } else if (errorCode == 400) {
-                            mView.showError("Внутренняя ошибка сервера")
+                        try {
+                            val errorCode = (e as HttpException).code()
+                            if (errorCode == 401) {
+                                TokenHolder.token = null
+                                mView.showError("Вы не авторизованы")
+                            } else if (errorCode == 400) {
+                                mView.showError("Внутренняя ошибка сервера")
+                            } else {
+                                mView.showError(e.message())
+                            }
+                        } catch (e1: ClassCastException) {
+                            mView.showError(e.message.toString())
                         }
                     }
                 })
@@ -78,11 +84,11 @@ class OrderDetailPresenter(private val mView: OrderDetailContract.View,
     }
 
     override fun sendNewStatus(status: Int) {
-        if (CurrentUser.token != null) {
-            with(ApiProvider.orderClient) {
+        if (TokenHolder.token != null) {
+            with(ApiProviderSingleton.orderApiClient) {
                 when (status) {
                     Constants.Status.PERFORMING -> {
-                        startOrder(CurrentUser.token!!, currentOrder.id!!)
+                        startOrder(TokenHolder.token!!, currentOrder.id!!)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(StatusChangeCallback(mView))
@@ -90,7 +96,7 @@ class OrderDetailPresenter(private val mView: OrderDetailContract.View,
                     }
 
                     Constants.Status.DONE -> {
-                        finishOrder(CurrentUser.token!!, currentOrder.id!!)
+                        finishOrder(TokenHolder.token!!, currentOrder.id!!)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(StatusChangeCallback(mView))
@@ -128,7 +134,7 @@ private class StatusChangeCallback(private val presenterView: OrderDetailContrac
     override fun onError(e: Throwable) {
         val errorCode = (e as HttpException).code()
         if (errorCode == 401) {
-            CurrentUser.token = null
+            TokenHolder.token = null
             presenterView.showError("Вы не авторизованы")
         } else if (errorCode == 400) {
             presenterView.showError("Внутренняя ошибка сервера")

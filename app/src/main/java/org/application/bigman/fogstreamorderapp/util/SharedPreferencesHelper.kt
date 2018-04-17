@@ -40,7 +40,7 @@ object SharedPreferencesHelper {
 
     private fun getSharedPrefInstance(context: Context): SharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedprefs_name), MODE_PRIVATE)
 
-    fun saveValue(context: Context, key: String, value: String) {
+    fun saveStringValue(context: Context, key: String, value: String?) {
         getSharedPrefInstance(context)
                 .edit()
                 .putString(key, value)
@@ -52,6 +52,7 @@ object SharedPreferencesHelper {
     }
 
     fun valueToNull(context: Context, key: String) {
+        println("I AM LOGGIN OUT")
         getSharedPrefInstance(context)
                 .edit()
                 .putString(key, null)

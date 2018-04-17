@@ -13,7 +13,7 @@ import retrofit2.http.*
  **/
 interface OrderApi {
     @GET("/orders/")
-    fun getAllUserOrders(@Header("Authorization") token: String): Observable<List<Order>>
+    fun getAllUserOrders(@Header("Authorization") token: String = ""): Observable<List<Order>>
 
     @GET("/orders/{id}/")
     fun getOrderById(@Header("Authorization") token: String, @Path("id") id: Int): Observable<Order>
@@ -29,7 +29,4 @@ interface OrderApi {
     fun authorize(
             @Field("username") username: String,
             @Field("password") password: String): Observable<AuthResponse>
-//
-//    @POST("/log-in/")
-//    fun authorize(@Body user: CurrentUser): Observable<TokenResp>
 }
